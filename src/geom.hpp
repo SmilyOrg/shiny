@@ -12,11 +12,12 @@ using Eigen::Matrix4f;
 
 using namespace std;
 
-const float EPSILON = 1e-5;
 
 typedef float Number;
 using Vector3 = Matrix<Number, 3, 1>;
 using Matrix3 = Matrix<Number, 3, 3>;
+
+const float EPSILON = 1e-5;
 
 static Number getRandom() {
 	return (Number)rand()/(RAND_MAX+1);
@@ -34,8 +35,8 @@ Vector3 getOrthogonalVector(Vector3 v) {
 }
 
 Vector3 getVectorRotatedAroundAxis(Vector3 v, Number angle, Vector3 axis) {
-	Number q0 = cos(angle*0.5);
-	Number qsin = sin(angle*0.5);
+	Number q0 = (Number)cos(angle*0.5);
+	Number qsin = (Number)sin(angle*0.5);
 	Number q1 = qsin*axis.x();
 	Number q2 = qsin*axis.y();
 	Number q3 = qsin*axis.z();

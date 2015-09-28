@@ -4,9 +4,6 @@
 #include <fstream>
 #include <sstream>
 
-#define _USE_MATH_DEFINES
-#include <math.h>
-
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include <thrust/generate.h>
@@ -17,7 +14,18 @@
 #include "server.hpp"
 #include "platform.hpp"
 
-#include "proto/renderRequest.pb.h"
+#include "renderRequest.pb.h"
+
+//*
+#pragma warning( push )
+#pragma warning( disable: 4756 )
+
+#define _USE_MATH_DEFINES
+#include <math.h>
+
+#define Infinity INFINITE
+#pragma warning( pop )
+//*/
 
 struct Stage {
 	int id;
@@ -205,8 +213,8 @@ void printElement(int i,
 
 void trace(Ray &r, Scene &scene) {
 	if (r.done) return;
-	Intersection nearest(INFINITY);
-	for (int i = 0; i < scene.spheres.size(); i++) {
+	Intersection nearest(Infinity);
+	for (size_t i = 0; i < scene.spheres.size(); i++) {
 		Sphere &s = scene.spheres[i];
 		Intersection inter = s.intersects(r);
 		if (inter.t > 0 && inter.t < nearest.t) {
@@ -215,7 +223,7 @@ void trace(Ray &r, Scene &scene) {
 		}
 	}
 	Vector3 nearestDisp = (Vector3)(r.dir*(Number)min(nearest.t, (Number)100));
-	if (nearest.t < INFINITY) {
+	if (nearest.t < Infinity) {
 		addVectorDir(r.pos, nearestDisp);
 		addVectorDir((Vector3) (r.pos + nearestDisp), nearest.normal);
 	}
@@ -232,7 +240,7 @@ void traceRays(thrust::host_vector<Ray> &h_rays, Scene &scene) {
 
 
 void interact(Ray &r) {
-	if (r.done || r.nearest.t == INFINITY) return;
+	if (r.done || r.nearest.t == Infinity) return;
 	bool doEmission = (rand() % 2 == 0);
 	if (doEmission) {
 		// Emission
@@ -268,7 +276,7 @@ ujson::value to_json(Sphere const &s) {
 
 ujson::value to_json(Scene const &s) {
 	std::vector<Sphere> spheres;
-	for (int i = 0; i < s.spheres.size(); i++) {
+	for (size_t i = 0; i < s.spheres.size(); i++) {
 		spheres.push_back(s.spheres[i]);
 	}
 	
@@ -326,8 +334,8 @@ struct Render {
 			
 			int ix = i%w;
 			int iy = i/w;
-			Number px = ((Number)ix + 0.5)/w;
-			Number py = ((Number)iy + 0.5)/h;
+			Number px = ((Number)ix + (Number)0.5)/w;
+			Number py = ((Number)iy + (Number)0.5)/h;
 			r.pos = frustum.pointOnNearPlane(px, py);
 			r.dir = r.pos - eye;
 			r.dir.normalize();
@@ -355,7 +363,6 @@ struct Render {
 int main()
 {
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
-	
 	shiny::RenderRequest renreq;
   
 	Render render;
@@ -399,6 +406,8 @@ int main()
 	dataFile.close();
   	
 	
+	
+	/*
 	Server server;
 	
 	server.start();
@@ -408,6 +417,7 @@ int main()
 	}
 	
 	server.stop();
+	//*/
 	
   	google::protobuf::ShutdownProtobufLibrary();
 	
