@@ -8,6 +8,34 @@
 
 {
     "version": "0.1.0",
+    "command": "jake",
+    "isShellCommand": true,
+    "tasks": [
+        {
+            "taskName": "run",
+            "isBuildCommand": true,
+            "showOutput": "always",
+            "args": [
+				"--trace"
+			],
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": ["relative", "${workspaceRoot}"],
+                "pattern": {
+                    "regexp": "^(.*)\\((\\d+)\\) : (warning|error|fatal error) (.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "severity": 3,
+                    "message": 4
+                }
+            }
+        }
+    ]
+}
+
+/*
+{
+    "version": "0.1.0",
     "command": "run.bat",
     "isShellCommand": true,
     "tasks": [
@@ -34,6 +62,7 @@
         }
     ]
 }
+*/
 
 /*
 // A task runner that calls the Typescript compiler (tsc) and

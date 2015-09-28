@@ -7,6 +7,8 @@
 /*global directory*/
 /*global complete*/
 
+task("default", ["run"])
+
 var exec = require('sync-exec');
 var shell_exec = require('shell_exec');
 var fs = require('fs');
